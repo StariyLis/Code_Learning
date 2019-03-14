@@ -5,12 +5,12 @@ import loto_six as six
 import rapido
 
 data_top = top.get_data()
-data_5x36 =
+data_5x36 = loto5.get_data()
 data_6x45 = six.get_data()
 data_rapido = rapido.get_data()
 
 # Создайте новый файл Excel и добавьте листы.
-workbook = xlsxwriter.Workbook('/home/stariylis/Documents/Stoloto/stoloto.xlsx')
+workbook = xlsxwriter.Workbook('/home/stariylis/PycharmProjects/Learning_Code/Excel_file/stoloto.xlsx')
 
 sheet_5x36 = workbook.add_worksheet('5x36')
 sheet_6x45 = workbook.add_worksheet('6x45')
@@ -44,7 +44,7 @@ sheet_6x45.set_column('B:G', 4)
 sheet_6x45.set_column('H:I', 2, empty_column)
 sheet_6x45.set_column('J:K', 9)
 sheet_6x45.set_column('L:L', 2, empty_column)
-sheet_6x45.set_column('M:BE', 4)
+sheet_6x45.set_column('M:BE', 3)
 
 sheet_rapido.set_column('A:A', 17)
 sheet_rapido.set_column('B:I', 4)
@@ -76,18 +76,18 @@ def excel_top_writer(colm, date, ball, c_nec=[]):
         row1 += 1
 
 
-def excel_5x36_writer():
-    sheet_5x36.write_row('A1', data_5x36, cell_format_1)
-    sheet_5x36.write_column('A2', loto5.get_data()[0], cell_format)
+def excel_5x36_writer(colm, date, ball, c_nec=[]):
+    sheet_5x36.write_row('A1', colm, cell_format_1)
+    sheet_5x36.write_column('A2', date, cell_format)
     row = 1
     row1 = 1
-    for i in loto5.get_data()[1]:
+    for i in ball:
         col = 1
         for j in i:
             sheet_5x36.write(row, col, j, cell_format_2)
             col += 1
         row += 1
-    for ch in loto5.ch_nech():
+    for ch in c_nec:
         col1 = 8
         for tmp in ch:
             sheet_5x36.write(row1, col1, tmp, cell_format_2)
@@ -95,7 +95,7 @@ def excel_5x36_writer():
         row1 += 1
 
     row2 = 1
-    for i in loto5.get_data()[1]:
+    for i in ball:
         for j in i:
             sheet_5x36.write(row2, 10 + j, j, cell_format_2)
         row2 += 1
@@ -147,7 +147,7 @@ def excel_rapido_writer(colm, date, ball, c_nec=[]):
 
 
 excel_top_writer(*data_top)
-excel_5x36_writer()
+excel_5x36_writer(*data_5x36)
 excel_6x45_writer(*data_6x45)
 excel_rapido_writer(*data_rapido)
 

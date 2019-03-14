@@ -1,19 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
-import time
+from pprint import pprint as pp
 
 
 def get_html():
     while True:
         req = requests.get('https://www.stoloto.ru/5x36plus/archive')
         if req.status_code != 200:
-            print('Ошибка, Код ответа: %s', rs.status)
-            time.sleep(15)
+            print('Ошибка, Код ответа: %s', req.status)
             continue
         return req.text
 
 
 def get_data():
+    all_data = []
     list_b = []
     ch_nch = []
     soup = BeautifulSoup(get_html(), 'lxml')
@@ -38,8 +38,14 @@ def get_data():
                 nch += 1
             d_ch_nch = [ch, nch]
         ch_nch.append(d_ch_nch)
-
-    return ch_nch
+    all_data.append(['Дата и время', '1-й', '2-й', '3-й', '4-й', '5-й', '', '', 'Чётных', 'Нечётных', '', '1',
+                     '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18',
+                     '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33',
+                     '34', '35', '36'])
+    all_data.append(draw_date)
+    all_data.append(list_b)
+    all_data.append(ch_nch)
+    return all_data
 
 
 # def ch_nech():
@@ -51,12 +57,8 @@ def get_data():
 
 def main():
     # data = ch_nech()
-    print(get_data())
+    pp(get_data())
 
 
 if __name__ == '__main__':
     main()
-
-['Дата и время', '1-й', '2-й', '3-й', '4-й', '5-й', '', '', 'Чётных', 'Нечётных', '', '1', '2', '3', '4',
-             '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
-             '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36']
