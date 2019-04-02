@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import requests
 from bs4 import BeautifulSoup
 import pickle
@@ -40,21 +42,28 @@ def get_data():
 
 
 def write_data():
+    d = get_data()
     if not os.path.exists(path_file):
         open(j_file, 'wb').close()
     if os.path.getsize(path_file) == 0:
         with open(j_file, 'wb') as wr_file:
-            pickle.dump(get_data(), wr_file)
+            pickle.dump(d, wr_file)
     else:
         with open(j_file, 'rb') as rd_file:
             read_data = pickle.load(rd_file)
-            read_data.update(get_data())
+            d.update(read_data)
             with open(j_file, 'wb') as wr_file:
-                pickle.dump(read_data, wr_file)
+                pickle.dump(d, wr_file)
 
     return read_data
 
+
+# def send_message():
+    # os.system('notify-send "{}"'.format(len(write_data())))
+
+
 def main():
+    # send_message()
     print(len(write_data()))
     print(write_data())
     print(len(get_data()))
