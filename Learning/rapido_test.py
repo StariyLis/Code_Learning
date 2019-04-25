@@ -20,25 +20,29 @@ def get_data():
     soup = BeautifulSoup(get_html(url), 'lxml')
     start = soup.find_all('div', class_='elem')
 
-    # Get lottery draw number & date
-    draw_number = [int(i.find('div', class_='draw').text) for i in start]
-    date = [i.find('div', class_='draw_date').text[:-3] for i in start]
+    all_draws = {}
 
-    dop_ball = []
-    draw_ball = []
-    dict_draws = dict.fromkeys(i for i in draw_number)
-    for i in start:
-        c = []
-        b = i.find('div', class_='container cleared').find_all('span')
+    for data in start:
+        dict_draw = dict.fromkeys(['Дата и время', '1-й Шар', '2-й Шар', '3-й Шар', '4-й Шар', '5-й Шар', '6-й Шар',
+                                   '7-й Шар', '8-й Шар', 'Доп. Шар'])
+        # Get lottery draw number & date
+        draw_number = int(data.find('div', class_='draw').text)
+        dict_draw['Дата и время'] = data.find('div', class_='draw_date').text[:-3]
+
+        b = data.find('div', class_='container cleared').find_all('span')
+        dict_draw['Доп. Шар'] = int(b[1].find('b').text)
         ball = b[0].find_all('b')
-        dop_ball.append(int(b[1].find('b').text))
-        for i in ball:
-            c.append(int(i.text))
-        draw_ball.append(c)
+        dict_draw['1-й Шар'] = int(ball[0].text)
+        dict_draw['2-й Шар'] = int(ball[1].text)
+        dict_draw['3-й Шар'] = int(ball[2].text)
+        dict_draw['4-й Шар'] = int(ball[3].text)
+        dict_draw['5-й Шар'] = int(ball[4].text)
+        dict_draw['6-й Шар'] = int(ball[5].text)
+        dict_draw['7-й Шар'] = int(ball[6].text)
+        dict_draw['8-й Шар'] = int(ball[7].text)
 
-    for k in range(50):
-        dict_draws[draw_number[k]] = [date[k], draw_ball[k], dop_ball[k]]
-    return dict_draws
+        all_draws[draw_number] = dict_draw
+    return all_draws
 
 
 def write_data():
