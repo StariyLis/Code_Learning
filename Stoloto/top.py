@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from pprint import pprint as pp
+import pandas as pd
+
+
 
 
 def get_html():
@@ -9,45 +11,43 @@ def get_html():
 
 
 def get_data():
-    all_data = []
+    all_ball = {}
     soup = BeautifulSoup(get_html(), 'lxml')
-    data = soup.find('div', {'class': 'month'}).find_all('div', 'elem')
+    data = soup.find('div', class_='month').find_all('div', 'elem')
+    for g in data:
+        number_draw = int(g.find('div', class_='draw').find('a').text)
+        column = {}
 
-    draw_date = [i.find('div', 'draw_date').text[:-3] for i in data]
+        try:
+            ball = g.find('div', class_='container cleared').find('span', class_='zone').find_all('b')
 
-    numbers = [num.find('div', 'container cleared') for num in data]
-    b = [num.find_all('b') for num in numbers]
-    balls = []
-    for i in list(b):
-        ball = []
-        ball.append(int(i[0].text))
-        ball.append(int(i[1].text))
-        ball.append(int(i[2].text))
-
-        balls.append(ball)
-
-    ch_nch = []
-    for i in balls:
-        ch = 0
-        nch = 0
-        for j in i:
-            if j % 2 == 0:
-                ch += 1
-            else:
-                nch += 1
-            d_ch_nch = [ch, nch]
-        ch_nch.append(d_ch_nch)
-    all_data.append(['Дата и время', '1-й', '2-й', '3-й', '', '', 'Чётных', 'Нечётных'])
-    all_data.append(draw_date)
-    all_data.append(balls)
-    all_data.append(ch_nch)
-    return all_data
+            column['Шар_1'] = int(ball[0].text)
+            column['Шар_2'] = int(ball[1].text)
+            column['Шар_3'] = int(ball[2].text)
+        except AttributeError:
+            print('Ждём-с')
+        column['Дата и время'] = g.find('div', class_='draw_date').text[:-3]
+        all_ball[number_draw] = column
+    # ch_nch = []
+    # for i in balls:
+    #     ch = 0
+    #     nch = 0
+    #     for j in i:
+    #         if j % 2 == 0:
+    #             ch += 1
+    #         else:
+    #             nch += 1
+    #         d_ch_nch = [ch, nch]
+    #     ch_nch.append(d_ch_nch)
+    # all_data.append(draw_date)
+    # all_data.append(balls)
+    # all_data.append(ch_nch)
+    return all_ball
 
 
 def main():
-    date_time = get_data()
-
-    pp(date_time)
+    date_time = pd.DataFrame(get_data().values(), index=get_data().keys())
+    print(date_time[['Шар_1','Шар_2','Шар_3']])
 
 
 if __name__ == '__main__':

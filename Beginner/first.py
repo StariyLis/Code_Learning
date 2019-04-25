@@ -1,10 +1,8 @@
 
-def sum(x):
-  if x < 0:
-      return 0
-  print(x)
-  sum(x - 1)
-  print(x)
+from datetime import datetime
+import time
+
+
 
 
 
@@ -14,4 +12,11 @@ def sum(x):
 
 
 if __name__ == '__main__':
-    sum(9)
+    now = datetime.now()
+    time.sleep(10)
+    now1 = datetime.now()
+    str_now = now.strftime('%d.%m.%Y %H:%M:%S')
+    str_now1 = now1.strftime('%d.%m.%Y %H:%M:%S')
+    print(now > now1)
+    print(str_now)
+    print(str_now1)
