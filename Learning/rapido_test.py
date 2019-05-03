@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import pickle
 import os
-import sys
+import pandas as pd
 
 j_file = 'draw_data.dat'
 url = 'https://www.stoloto.ru/rapido/archive'
@@ -42,7 +42,7 @@ def get_data():
         dict_draw['8-й Шар'] = int(ball[7].text)
 
         all_draws[draw_number] = dict_draw
-    return all_draws
+    return pd.DataFrame(all_draws.values(), index=all_draws.keys())
 
 
 def write_data():
@@ -68,9 +68,9 @@ def write_data():
 
 def main():
     # send_message()
-    print(len(write_data()))
-    print(write_data())
-    print(len(get_data()))
+    # print(len(write_data()))
+    # print(write_data())
+    # print(len(get_data()))
     print(get_data())
 
 
