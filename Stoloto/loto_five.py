@@ -13,51 +13,46 @@ def get_html():
 
 
 def get_data():
-    all_data = []
-    list_b = []
-    ch_nch = []
+
+
+
     soup = BeautifulSoup(get_html(), 'lxml')
-    date = soup.findAll('div', 'draw_date')
-    draw_date = [i.text for i in date[1:]]
+    elem = soup.findAll('div', 'elem')
+    all_data = {}
 
-    div = soup.findAll('div', {'class': 'container cleared'})
-    for i in div:
-        b = i.find_all('b')
-        b_1 = []
-        for j in b[:-1]:
-            b_1.append(int(j.text))
-        list_b.append(b_1)
+    for i in elem:
+        draw_data = dict.fromkeys(['Дата и время', '1-й', '2-й', '3-й', '4-й', '5-й', 'Доп.шар', 'Чётные', 'Нечётные'])
+        draw_data['Дата и время'] = i.find('div', class_='draw_date').text
+        draw = int(i.find('div', class_='draw').find('a').text)
+        div = i.find('div', class_='numbers').findAll('div', class_='container cleared')
 
-    for j in range(len(list_b)):
-        ch = 0
-        nch = 0
-        for i in list_b[j]:
-            if i % 2 == 0:
-                ch += 1
-            else:
-                nch += 1
-            d_ch_nch = [ch, nch]
-        ch_nch.append(d_ch_nch)
-    all_data.append(['Дата и время', '1-й', '2-й', '3-й', '4-й', '5-й', '', '', 'Чётных', 'Нечётных', '', '1',
-                     '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18',
-                     '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33',
-                     '34', '35', '36'])
-    all_data.append(draw_date)
-    all_data.append(list_b)
-    all_data.append(ch_nch)
+        for k in div:
+            b = k.find_all('b')
+            draw_data['1-й'] = int(b[0].text)
+            draw_data['2-й'] = int(b[1].text)
+            draw_data['3-й'] = int(b[2].text)
+            draw_data['4-й'] = int(b[3].text)
+            draw_data['5-й'] = int(b[4].text)
+            draw_data['Доп.шар'] = int(b[5].text)
+
+            ch = 0
+            nch = 0
+
+            for ball in b[:-1]:
+                if int(ball.text) % 2 == 0:
+                    ch += 1
+                else: nch += 1
+                draw_data['Чётные'] = ch
+                draw_data['Нечётные'] = nch
+        all_data[draw] = draw_data
+
     return all_data
 
-
-# def ch_nech():
-#
-#     ar_top = get_data()[1]
-
-#     return ch_nch
 
 
 def main():
     # data = ch_nech()
-    pp(get_data())
+    print(get_data())
 
 
 if __name__ == '__main__':
