@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 import pandas as pd
 
 
@@ -28,6 +29,12 @@ def get_data():
             print('Ждём-с')
         column['Дата и время'] = g.find('div', class_='draw_date').text[:-3]
         all_ball[number_draw] = column
+    date_time = pd.DataFrame(all_ball.values(), index=all_ball.keys())
+
+
+
+
+
     # ch_nch = []
     # for i in balls:
     #     ch = 0
@@ -42,15 +49,15 @@ def get_data():
     # all_data.append(draw_date)
     # all_data.append(balls)
     # all_data.append(ch_nch)
-    return all_ball
+    return date_time
 
 
 def main():
-    date_time = pd.DataFrame(get_data().values(), index=get_data().keys())
-    print(date_time[['Шар_1','Шар_2','Шар_3']])
+    print(len(get_data()))
+
+    # print(date_time[['Шар_1','Шар_2','Шар_3', 'Дата и время']])
+    # date_time.to_csv('eee.csv', sep=';', encoding='utf-8')
 
 
 if __name__ == '__main__':
     main()
-
-
