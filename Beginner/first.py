@@ -10,33 +10,36 @@ class Stoloto():
 
 
     def get_html(self):
-        r = requests.get(self.url).text
-        return r
+        r = requests.get(self.url)
+        return r.text
+
 
     def get_date(self):
-        draw_date = {}
+        draw_ball= {}
         draw = []
         date = []
-        ball_draw = []
+        time = []
         ball = []
         soup = BeautifulSoup(self.get_html(), 'lxml')
         month = soup.findAll('div', class_='month')
         for h in month:
             elem = h.find_all('div', class_='elem')
-            draw = [int(i.find('div', class_='draw').text) for i in elem]
-            date = [i.find('div', class_='draw_date').text for i in elem]
-            for d in elem:
+            for i in elem:
+                draw = int(i.find('div', class_='draw').text)
+                date = i.find('div', class_='draw_date').text.split()[0]
+                time = i.find('div', class_='draw_date').text.split()[1]
                 try:
-                    b = d.find('div', class_='container cleared').find('span', class_='zone').find_all('b')
-                    ball_draw = [int(z.text) for z in b]
-                    ball.append(ball_draw)
+                    b = i.find('div', class_='container cleared').find('span', class_='zone').find_all('b')
+                    ball = [int(z.text) for z in b]
+
                 except Exception:
                     print('Ahhhhhh')
-        return draw, date, ball
+                draw_ball[draw] = ball
+
+        return draw_ball
+
 
 lotto_5x36plus = Stoloto('https://www.stoloto.ru/5x36plus/archive')
-print(lotto_5x36plus.get_date()[2])
-top3 = Stoloto('https://www.stoloto.ru/top3/archive')
-print(top3.get_date()[2])
-rapido = Stoloto('https://www.stoloto.ru/rapido/archive')
-print(rapido.get_date()[2])
+lotto_6x45 = Stoloto('https://www.stoloto.ru/6x45/archive')
+
+print(lotto_5x36plus.get_date())
