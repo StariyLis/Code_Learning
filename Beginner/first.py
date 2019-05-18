@@ -41,8 +41,8 @@ class Stoloto():
             if os.path.getsize(self.path) != 0:
                 with open(self.path, 'rb') as fr:
                     read_data = pickle.load(fr)
-
-        return self.draw_ball
+        read_data.update(self.draw_ball)
+        return len(read_data)
 
 
 top3 = Stoloto('https://www.stoloto.ru/top3/archive')
