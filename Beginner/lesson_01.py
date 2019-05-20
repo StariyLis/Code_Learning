@@ -3,14 +3,6 @@ from datetime import datetime
 import time
 
 
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     now = datetime.now()
     time.sleep(10)

@@ -35,15 +35,24 @@ class Stoloto():
                 self.draw_ball[draw] = ball
 
         if not os.path.exists(self.path):
+            open(self.path, 'wb').close()
+
+        if os.path.getsize(self.path) == 0:
             with open(self.path, 'wb') as fw:
                 pickle.dump(self.draw_ball, fw)
-        else:
-            if os.path.getsize(self.path) != 0:
-                with open(self.path, 'rb') as fr:
-                    read_data = pickle.load(fr)
+        with open(self.path, 'rb') as fr:
+            read_data = pickle.load(fr)
         read_data.update(self.draw_ball)
+        with open(self.path, 'wb') as fw:
+            pickle.dump(read_data, fw)
         return len(read_data)
 
 
 top3 = Stoloto('https://www.stoloto.ru/top3/archive')
-print(top3.get_date())
+top3.get_date()
+
+lotto_5x36 = Stoloto('https://www.stoloto.ru/5x36plus/archive')
+lotto_5x36.get_date()
+
+lotto_6x45 = Stoloto('https://www.stoloto.ru/6x45/archive')
+lotto_6x45.get_date()
