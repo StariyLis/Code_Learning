@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from pprint import pprint as pp
-
+import pandas as pd
 
 def get_html():
     while True:
@@ -51,8 +50,8 @@ def get_data():
 
 
 def main():
-    # data = ch_nech()
-    print(get_data())
+    df = pd.DataFrame(get_data().values(), index=get_data().keys())
+    print(df)
 
 
 if __name__ == '__main__':

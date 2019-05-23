@@ -1,58 +1,51 @@
 import requests
 from bs4 import BeautifulSoup
+import pickle
+import os.path
 import pandas as pd
 
-def get_html():
-    while True:
-        req = requests.get('https://www.stoloto.ru/5x36plus/archive')
-        if req.status_code != 200:
-            print('Ошибка, Код ответа: %s', req.status)
-            continue
-        return req.text
+
+class Stoloto():
+    def __init__(self, url):
+        self.url = url
+        self.path = './db_' + self.url.split('/')[3] + '.dat'
+        self.draw_ball= {}
 
 
-def get_data():
+    def get_html(self):
+        r = requests.get(self.url)
+        return r.text
 
 
+    def get_date(self):
 
-    soup = BeautifulSoup(get_html(), 'lxml')
-    elem = soup.findAll('div', 'elem')
-    all_data = {}
+        ball = []
+        soup = BeautifulSoup(self.get_html(), 'lxml')
+        month = soup.findAll('div', class_='month')
+        for h in month:
+            elem = h.find_all('div', class_='elem')
+            draw = [int(i.find('div', class_='draw').text) for i in elem]
+            draw_date = [i.find('div', class_='draw_date').text[:-3] for i in elem]
+            for i in elem:
+                try:
+                    b = i.find('div', class_='container cleared').find('span', class_='zone').find_all('b')
+                    ball = [int(z.text) for z in b]
+                except Exception:
+                    print('Ahhhhhh')
+                # self.draw_ball[draw] = ball
 
-    for i in elem:
-        draw_data = dict.fromkeys(['Дата и время', '1-й', '2-й', '3-й', '4-й', '5-й', 'Доп.шар', 'Чётные', 'Нечётные'])
-        draw_data['Дата и время'] = i.find('div', class_='draw_date').text
-        draw = int(i.find('div', class_='draw').find('a').text)
-        div = i.find('div', class_='numbers').findAll('div', class_='container cleared')
+        # if not os.path.exists(self.path):
+        #     open(self.path, 'wb').close()
+        #
+        # if os.path.getsize(self.path) == 0:
+        #     with open(self.path, 'wb') as fw:
+        #         pickle.dump(self.draw_ball, fw)
+        # with open(self.path, 'rb') as fr:
+        #     read_data = pickle.load(fr)
+        # read_data.update(self.draw_ball)
+        # with open(self.path, 'wb') as fw:
+        #     pickle.dump(read_data, fw)
+        return draw_date
 
-        for k in div:
-            b = k.find_all('b')
-            draw_data['1-й'] = int(b[0].text)
-            draw_data['2-й'] = int(b[1].text)
-            draw_data['3-й'] = int(b[2].text)
-            draw_data['4-й'] = int(b[3].text)
-            draw_data['5-й'] = int(b[4].text)
-            draw_data['Доп.шар'] = int(b[5].text)
-
-            ch = 0
-            nch = 0
-
-            for ball in b[:-1]:
-                if int(ball.text) % 2 == 0:
-                    ch += 1
-                else: nch += 1
-                draw_data['Чётные'] = ch
-                draw_data['Нечётные'] = nch
-        all_data[draw] = draw_data
-
-    return all_data
-
-
-
-def main():
-    df = pd.DataFrame(get_data().values(), index=get_data().keys())
-    print(df)
-
-
-if __name__ == '__main__':
-    main()
+top3 = Stoloto('https://www.stoloto.ru/top3/archive')
+print(top3.get_date())

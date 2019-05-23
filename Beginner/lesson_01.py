@@ -1,14 +1,7 @@
+import pandas as pd
 
-from datetime import datetime
-import time
+data = pd.read_pickle('./db_5x36plus.dat')
+col = [str(i) + '-й шар' for i in range(1, (len(list(data.values())[0]) + 1))]
+df_5x36 = pd.DataFrame(data.values(), index=data.keys(), columns=col)
 
-
-if __name__ == '__main__':
-    now = datetime.now()
-    time.sleep(10)
-    now1 = datetime.now()
-    str_now = now.strftime('%d.%m.%Y %H:%M:%S')
-    str_now1 = now1.strftime('%d.%m.%Y %H:%M:%S')
-    print(now > now1)
-    print(str_now)
-    print(str_now1)
+print(df_5x36)

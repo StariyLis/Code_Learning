@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pickle
 import os.path
+import pandas as pd
 
 
 class Stoloto():
