@@ -8,7 +8,7 @@ import pandas as pd
 class Stoloto():
     def __init__(self, url):
         self.url = url
-        self.path = './db_' + self.url.split('/')[3] + '.dat'
+        self.path = './db_' + self.url.split('/')[3] + '.csv'
         self.draw_ball= {}
 
 
@@ -17,7 +17,7 @@ class Stoloto():
         return r.text
 
 
-    def get_date(self):
+    def get_date(self, r = 'Blia'):
 
         all_ball = []
         draw_date = []
@@ -40,7 +40,13 @@ class Stoloto():
         date = pd.to_datetime(draw_date)
         col = ['Ball_' + str(i) for i in range(1, len(all_ball[0]) + 1)]
         df = pd.DataFrame(all_ball, index=date, columns=col)
+        if not os.path.exists(self.path):
+            df.to_csv(self.path)
+        else:
+            dfr = pd.read_csv(self.path)
+            r = dfr.to_dict(orient='index')
         s = df.to_dict(orient='index')
+
                 # self.draw_ball[draw] = ball
 
         # if not os.path.exists(self.path):
@@ -54,7 +60,7 @@ class Stoloto():
         # read_data.update(self.draw_ball)
         # with open(self.path, 'wb') as fw:
         #     pickle.dump(read_data, fw)
-        return s
+        return r
 
 top3 = Stoloto('https://www.stoloto.ru/top3/archive')
 print(top3.get_date())
